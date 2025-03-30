@@ -6,7 +6,8 @@ This is the backend API for a full-stack e-commerce application built for wareho
 
 ## Features
 
-- **JWT Authentication** – Secure login & protected routes
+- **JWT Authentication** 
+  - Secure login & protected routes
 - **User Registration with Document Upload**
   - Upload ABC License & Sales Tax License
 - **Admin User Approval System**
