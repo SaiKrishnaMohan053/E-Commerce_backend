@@ -18,11 +18,10 @@ const generateUniqueFileName = (originalName) => {
 };
 
 const validateFile = (file) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 5 * 1024 * 1024;
 
-  if (!allowedTypes.includes(file.mimetype)) {
-    throw new Error('Invalid file type. Allowed: JPEG, PNG, PDF');
+  if (!file.mimetype.startsWith('image/') && file.mimetype !== 'application/pdf') {
+    throw new Error('Invalid file type. Allowed: images and PDF');
   }
   if (file.size > maxSize) {
     throw new Error('File too large. Max size is 5MB');
