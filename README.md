@@ -4,9 +4,9 @@ This is the backend API for a full-stack e-commerce application built for wareho
 
 ---
 
-## 🚀 Features
+## Features
 
-### 🔐 Authentication & User Management
+### Authentication & User Management
 - **JWT Authentication**
   - Secure login & protected routes
 - **User Registration with Document Upload**
@@ -19,7 +19,7 @@ This is the backend API for a full-stack e-commerce application built for wareho
 - **Profile Management**
   - Update user profile from frontend
 
-### 📦 Product Management (Admin)
+### Product Management (Admin)
 - **Create Products**
   - With or without flavor variants
   - With optional deal & purchase limit
@@ -36,7 +36,7 @@ This is the backend API for a full-stack e-commerce application built for wareho
 - **Delete Products**
   - Safe delete with image cleanup from S3
 
-### 🔎 Product Search & Filter
+### Product Search & Filter
 - **Get All Products**
   - With pagination and sorting
 - **Filter by**
@@ -46,13 +46,13 @@ This is the backend API for a full-stack e-commerce application built for wareho
 - **Get Single Product by ID**
   - Full detail retrieval
 
-### 📈 Admin Dashboard APIs
+### Admin Dashboard APIs
 - Approve, reject (with reason), delete or edit users
 - Get all users and specific user details
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 | **Backend**   | Node.js, Express.js                         |
 | **Database**  | MongoDB (Mongoose ODM)                      |
@@ -64,7 +64,7 @@ This is the backend API for a full-stack e-commerce application built for wareho
 
 ---
 
-## 🧠 Core Logic Overview
+## Core Logic Overview
 
 ### Flavored Products
 - Support per-flavor price, stock, sold count
@@ -86,19 +86,7 @@ This is the backend API for a full-stack e-commerce application built for wareho
 
 ---
 
-## 🧪 How to Run Locally
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm start
-```
-
----
-
-## 🌐 Environment Variables
+## Environment Variables
 
 ```env
 PORT=5000
@@ -113,18 +101,10 @@ EMAIL_PASS=your_email_password
 
 ---
 
-## 📌 CI/CD & Deployment
+## CI/CD & Deployment
 - **Backend deployed on [Render](https://render.com/)**
 - Auto-deploy on push via GitHub
 - Database hosted on MongoDB Atlas
-
----
-
-## 📈 Future Enhancements
-- Real-time order tracking via WebSockets
-- Redis caching for frequent queries
-- Product sales analytics and AI-powered suggestions
-- Rate limiting and logging middleware for production
 
 ---
 
