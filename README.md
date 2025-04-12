@@ -1,6 +1,6 @@
 # E-Commerce Backend
 
-This is the backend API for a full-stack e-commerce application built for warehouse-based product ordering. It provides RESTful API endpoints for user authentication, admin management, and full product/order functionalities including flavored product handling, deal management, and S3-based image uploads.
+This is the backend e-commerce application built for warehouse-based product ordering. It provides RESTful API endpoints for user authentication, admin management, and full product/order functionalities including flavored product handling, deal management, and S3-based image uploads.
 
 ---
 
