@@ -8,7 +8,7 @@ const {
   getProductById,
   deleteProduct,
 } = require('../controllers/productController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authmiddleware.js');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 router.get('/getProducts', getProducts);
