@@ -1389,3 +1389,25 @@
 2025-04-12 12:09:54 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
 2025-04-12 12:09:54 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
 2025-04-12 15:58:06 [INFO]: User authenticated | {"email":"saikrishnamohan.k@gmail.com"}
+2025-04-15 09:57:24 [WARN]: No token provided in authorization header
+2025-04-15 09:57:32 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 09:57:32 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 09:57:32 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:01 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:01 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:01 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:28 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:28 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:28 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:48 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:48 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:18:48 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:20:13 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:20:13 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:20:13 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:04 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:04 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:04 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:58 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:58 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-04-15 10:21:58 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}

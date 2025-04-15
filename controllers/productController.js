@@ -123,46 +123,49 @@ const updateProductInfo = async (req, res) => {
     if (flavors) {
       const parsedFlavors =
         typeof flavors === "string" ? JSON.parse(flavors) : flavors;
-      const updatedFlavorsMap = new Map();
       let isIndividualPricing = false;
-
-      product.flavors.forEach((existing) => {
-        updatedFlavorsMap.set(existing.name.toLowerCase(), { ...existing });
-      });
-
-      parsedFlavors.forEach((newFlavor) => {
-        const key = newFlavor.name.toLowerCase();
-        const existing = updatedFlavorsMap.get(key);
-        const updatedFlavor = {
-          name: newFlavor.name,
-          price: newFlavor.price ?? existing?.price ?? undefined,
-          stock: newFlavor.stock ?? existing?.stock ?? 0,
-          soldCount: existing?.soldCount ?? 0,
-        };
-
+    
+      const updatedFlavors = parsedFlavors.map(newFlavor => {
+        const existing = product.flavors.find(
+          (f) => f.name.toLowerCase() === newFlavor.name.toLowerCase()
+        );
+    
         if (newFlavor.price !== undefined) {
           isIndividualPricing = true;
         }
-        updatedFlavorsMap.set(key, updatedFlavor);
+    
+        return {
+          name: newFlavor.name,
+          price:
+            newFlavor.price !== undefined
+              ? newFlavor.price
+              : existing
+              ? existing.price
+              : undefined,
+          stock:
+            newFlavor.stock !== undefined
+              ? newFlavor.stock
+              : existing
+              ? existing.stock
+              : 0,
+          soldCount: existing ? existing.soldCount : 0,
+        };
       });
-
-      product.flavors = Array.from(updatedFlavorsMap.values());
-
+    
+      product.flavors = updatedFlavors;
+    
       if (isIndividualPricing) {
         product.price = undefined;
       } else if (price !== undefined) {
         product.price = Number(price);
-        product.flavors = product.flavors.map((f) => ({
-          ...f,
-          price: undefined,
-        }));
+        product.flavors = updatedFlavors.map((f) => ({ ...f, price: undefined }));
       }
-
+    
       product.stock = undefined;
       product.soldCount = undefined;
     } else if (price !== undefined) {
       product.price = Number(price);
-      product.stock = Number(stock); 
+      product.stock = Number(stock);
       product.flavors = [];
     }
 
@@ -182,9 +185,7 @@ const updateProductInfo = async (req, res) => {
     res.json(updated);
   } catch (err) {
     console.error("Error updating product info:", err);
-    res
-      .status(500)
-      .json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
@@ -197,31 +198,46 @@ const getProducts = async (req, res) => {
       priceMin,
       priceMax,
       sort,
-      page = 1,
-      limit = 12,
+      page,
+      limit,
+      name,
+      excludeId,
     } = req.query;
 
-    const pageNumber = Number(page);
-    const pageSize = Number(limit);
+    const pageNumber = Number(page) >= 1 ? Number(page) : 1;
+    const pageSize = Number(limit) > 0 ? Number(limit) : 12;
 
     let filter = {};
 
-    if (req.query.name) {
-      filter.name = { $regex: req.query.name, $options: "i" };
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
     }
-    if (req.query.excludeId) {
-      filter._id = { $ne: req.query.excludeId };
-    }    
-    if (category) filter.category = category.trim().toLowerCase();
+
+    if (excludeId) {
+      filter._id = { $ne: excludeId };
+    }
+
+    if (category) {
+      filter.category = category.trim().toLowerCase();
+    }
+
     if (subCategories) {
       const list = subCategories.split(',').map((c) => c.trim().toLowerCase());
       filter.subCategories = { $in: list };
-    }    
-    if (isDeal === 'true') filter.isDeal = true;
+    }
+
+    if (isDeal === 'true') {
+      filter.isDeal = true;
+    }
+
     if (priceMin || priceMax) {
       filter.price = {};
-      if (priceMin) filter.price.$gte = Number(priceMin);
-      if (priceMax) filter.price.$lte = Number(priceMax);
+      if (priceMin) {
+        filter.price.$gte = Number(priceMin);
+      }
+      if (priceMax) {
+        filter.price.$lte = Number(priceMax);
+      }
     }
 
     console.log('Filter:', filter);
@@ -230,10 +246,15 @@ const getProducts = async (req, res) => {
 
     if (sort) {
       let sortOption = {};
-      if (sort === 'price_asc') sortOption.price = 1;
-      else if (sort === 'price_desc') sortOption.price = -1;
-      else if (sort === 'newest') sortOption.createdAt = -1;
-      else if (sort === 'popularity') sortOption['flavors.soldCount'] = -1;
+      if (sort === 'price_asc') {
+        sortOption.price = 1;
+      } else if (sort === 'price_desc') {
+        sortOption.price = -1;
+      } else if (sort === 'newest') {
+        sortOption.createdAt = -1;
+      } else if (sort === 'popularity') {
+        sortOption['flavors.soldCount'] = -1;
+      }
       query = query.sort(sortOption);
     }
 
