@@ -6,6 +6,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const productRoutes = require('./routes/productRoute.js');
 const userRoutes = require('./routes/userRoute.js');
+const cartRoutes = require('./routes/cartRoutes.js');
 const orderRoutes = require('./routes/orderRoute.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const { errorHandler, notFound } = require('./middleware/errormiddleware.js');
@@ -14,13 +15,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-const User = require('./models/user.js');
-const Product = require('./models/product.js');
-const Order = require('./models/order.js');
-const Admin = require('./models/admin.js');
 const { protect, admin } = require('./middleware/authmiddleware.js');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 dotenv.config();
 
@@ -77,6 +73,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', protect, admin, adminRoutes);
 
@@ -86,14 +83,14 @@ app.use(errorHandler);
 mongoose.connect(process.env.MONGO_URI).then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
-    socket.on('orderUpdate', (data) => {
-      io.emit('orderUpdate', data);
-    });
-    socket.on('disconnect', () => {
-      console.log('User disconnected');
-    });
+  console.log('A user connected');
+  socket.on('orderUpdate', (data) => {
+    io.emit('orderUpdate', data);
   });
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
   
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

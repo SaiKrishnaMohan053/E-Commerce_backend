@@ -46,6 +46,22 @@ This is the backend e-commerce application built for warehouse-based product ord
 - **Get Single Product by ID**
   - Full detail retrieval
 
+### Cart Management
+- **Cart Creation and Retrieval**
+  - Auto-creates cart on user’s first interaction
+- **Add to Cart**
+  - Support for flavored/non-flavored product additions
+  - If item exists, updates quantity
+- **Update Cart Item**
+  - Quantity modification or removal when set to 0
+- **Remove Item from Cart**
+  - Removes selected item (flavored/unflavored match)
+- **Clear Cart**
+  - Removes all items from user’s cart
+- **Cart Items**
+  - Includes product ID, flavor, qty, price
+  - Populated with product name, images, purchaseLimit
+
 ### Admin Dashboard APIs
 - Approve, reject (with reason), delete or edit users
 - Get all users and specific user details
@@ -60,7 +76,6 @@ This is the backend e-commerce application built for warehouse-based product ord
 | **Auth**      | JWT + Role-based Middleware                 |
 | **Email**     | Nodemailer                                  |
 | **Deployment**| Render                                       |
-
 
 ---
 
@@ -83,6 +98,12 @@ This is the backend e-commerce application built for warehouse-based product ord
 ### Image Handling
 - `multer.memoryStorage()` for file uploads
 - `uploadToS3()` and `deleteFromS3()` for AWS S3
+
+### Cart Logic
+- Cart document linked to user (one-to-one)
+- Item uniqueness based on `productId` and optional `flavor`
+- Automatically creates cart if none exists
+- Handles quantity updates, item removal, and full cart clearing
 
 ---
 
