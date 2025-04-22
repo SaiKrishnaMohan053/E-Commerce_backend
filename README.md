@@ -47,8 +47,6 @@ This is the backend e-commerce application built for warehouse-based product ord
   - Full detail retrieval
 
 ### Cart Management
-- **Cart Creation and Retrieval**
-  - Auto-creates cart on user’s first interaction
 - **Add to Cart**
   - Support for flavored/non-flavored product additions
   - If item exists, updates quantity
@@ -102,7 +100,6 @@ This is the backend e-commerce application built for warehouse-based product ord
 ### Cart Logic
 - Cart document linked to user (one-to-one)
 - Item uniqueness based on `productId` and optional `flavor`
-- Automatically creates cart if none exists
 - Handles quantity updates, item removal, and full cart clearing
 
 ---
