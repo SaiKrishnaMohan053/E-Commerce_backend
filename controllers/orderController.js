@@ -65,8 +65,7 @@ const addOrder = async (req, res) => {
       }
       return {
         product: item.product,      
-        name:    prod.name,         
-        image:   prod.images[0],    
+        name:    prod.name,             
         flavor:  item.flavor || null,
         qty:     item.qty,
         price,                     
@@ -164,7 +163,7 @@ const getMyOrders = async (req, res) => {
 };
 
 const getOrderById = async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('user', 'email storeName');
+  const order = await Order.findById(req.params.id).populate('user', 'email storeName').populate('orderItems.product', 'images name');
   if (order && order.user._id.equals(req.user._id) || req.user.isAdmin) {
     return res.json(order);
   }
