@@ -256,6 +256,8 @@ const getProducts = async (req, res) => {
         sortOption['flavors.soldCount'] = -1;
       }
       query = query.sort(sortOption);
+    } else {
+      query = query.sort({ name: 1 });
     }
 
     const total = await Product.countDocuments(filter);

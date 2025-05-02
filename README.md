@@ -7,100 +7,71 @@ This is the backend e-commerce application built for warehouse-based product ord
 ## Features
 
 ### Authentication & User Management
-- **JWT Authentication**
-  - Secure login & protected routes
-- **User Registration with Document Upload**
-  - Upload ABC License & Sales Tax License (AWS S3)
-- **Admin User Approval System**
-  - Admin can approve/reject users with reason
-  - Email notifications for both approval and rejection
-- **Password Recovery via Email**
-  - Forgot/reset password flow with token expiry
-- **Profile Management**
-  - Update user profile from frontend
+- **JWT Authentication** with secure login & protected routes
+- **User Registration with Document Upload** via AWS S3
+- **Admin Approval Workflow** for new users with email notifications
+- **Password Recovery** through email with token expiry
+- **Profile Management** endpoints
 
 ### Product Management (Admin)
-- **Create Products**
-  - With or without flavor variants
-  - With optional deal & purchase limit
-- **Flavored Product Support**
-  - Each flavor can have individual price & stock
-- **Stock Management**
-  - Update stock per flavor or non-flavored products
-- **Deal Management**
-  - Supports discount types: `percent` or `fixed`
-- **Product Editing**
-  - Update name, description, price, images
-- **Image Management via AWS S3**
-  - Upload & delete product images from S3
-- **Delete Products**
-  - Safe delete with image cleanup from S3
+- **Create / Read / Update / Delete Products**
+  - Supports products with or without flavor variants
+  - Optional deal & purchase limit settings
+- **Flavored Product Support**: individual stock, price, sold count per flavor
+- **Stock Management**: update stock by flavor or overall
+- **Deal Management**: `percent` and `fixed` discounts
+- **Image Handling**: upload & delete via AWS S3
 
-### Product Search & Filter
-- **Get All Products**
-  - With pagination and sorting
-- **Filter by**
-  - Category, subCategory, name, price range, deals
-- **Sort by**
-  - Price (asc/desc), newest, popularity (sold count)
-- **Get Single Product by ID**
-  - Full detail retrieval
+### Product Retrieval & Filtering
+- **Get All Products** with pagination, sorting, and filtering
+- **Filters**: category, subCategory, name search, price range, deals
+- **Sorting**: price, newest, popularity (sold count), name (A→Z)
+- **Get Product by ID**
 
 ### Cart Management
-- **Add to Cart**
-  - Support for flavored/non-flavored product additions
-  - If item exists, updates quantity
-- **Update Cart Item**
-  - Quantity modification or removal when set to 0
-- **Remove Item from Cart**
-  - Removes selected item (flavored/unflavored match)
+- **Add / Update / Remove Cart Items**
 - **Clear Cart**
-  - Removes all items from user’s cart
-- **Cart Items**
-  - Includes product ID, flavor, qty, price
-  - Populated with product name, images, purchaseLimit
+- **One-to-One Cart per User** with flavored item support
 
-### Admin Dashboard APIs
-- Approve, reject (with reason), delete or edit users
-- Get all users and specific user details
-
----
-
-## Tech Stack
-
-| **Backend**   | Node.js, Express.js                         |
-| **Database**  | MongoDB (Mongoose ODM)                      |
-| **Storage**   | AWS S3 for file & image uploads             |
-| **Auth**      | JWT + Role-based Middleware                 |
-| **Email**     | Nodemailer                                  |
-| **Deployment**| Render                                       |
+### Order Management
+- **Place Order** with quantity clamping to available stock
+  - Returns an `adjustments` array for any items clamped
+- **Order Cancellation** reverses stock and sold counts
+- **Fetch My Orders** endpoint with pagination and sorting
+- **Fetch Order by ID** for order details
+- **Admin Order Actions**: update status, upload invoice, cancel order
 
 ---
 
 ## Core Logic Overview
 
 ### Flavored Products
-- Support per-flavor price, stock, sold count
-- If all prices same: store once in `product.price`
-- If prices vary: flavor-wise pricing is used
+- Per-flavor pricing and stock stored in product documents
 
-### Stock Management
-- Flavored: stock per flavor name
-- Non-flavored: `stock` field at product level
+### Stock & Sold Count Tracking
+- **Clamping**: automatically adjust order quantities to current stock
+- **Backfill**: cancelling an order restores stock and sold counts
 
 ### Deals & Discounts
-- `isDeal`: toggle deal mode
-- `discountType`: `percent` or `fixed`
-- `discountValue`: computed on frontend based on base price
+- Flags and fields to support `percent` or `fixed` deals
 
 ### Image Handling
-- `multer.memoryStorage()` for file uploads
-- `uploadToS3()` and `deleteFromS3()` for AWS S3
+- `multer.memoryStorage()` for uploads
+- `uploadToS3()` / `deleteFromS3()` utilities
 
-### Cart Logic
-- Cart document linked to user (one-to-one)
-- Item uniqueness based on `productId` and optional `flavor`
-- Handles quantity updates, item removal, and full cart clearing
+### Pagination
+- Endpoints accept `page` & `limit` query params
+- Responses include `page`, `totalPages`, and `totalItems`
+
+---
+
+## Tech Stack
+
+- **Node.js & Express.js** for server
+- **MongoDB & Mongoose** for database
+- **AWS S3** for file storage
+- **JWT & Middleware** for auth and roles
+- **Nodemailer** for emails
 
 ---
 
@@ -119,14 +90,12 @@ EMAIL_PASS=your_email_password
 
 ---
 
-## CI/CD & Deployment
-- **Backend deployed on [Render](https://render.com/)**
-- Auto-deploy on push via GitHub
-- Database hosted on MongoDB Atlas
+## Deployment & CI/CD
+- **Backend** deployed on Render with auto-deploy via GitHub
 
 ---
 
-## 👨‍💻 Maintained By
+## Maintainer
 
 **Sai Krishna Mohan Kolla**  
 Full Stack Developer – MERN | AWS | CI/CD

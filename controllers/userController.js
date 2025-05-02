@@ -7,7 +7,9 @@ const { sendApprovalEmail, sendResetPasswordEmail, sendDocumentRejectionEmail } 
 
 const findUserById = async (id) => {
   const user = await User.findById(id);
-  if (!user) throw new Error('User not found');
+  if (!user) {
+    res.status(404).json({ message: 'User not found' });
+  }
   return user;
 };
 

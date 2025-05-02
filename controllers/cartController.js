@@ -37,7 +37,7 @@ const addItem = async (req, res) => {
   await cart.save();
 
   await cart.populate("items.productId", "name images purchaseLimit");
-  return res.json(cart);
+  res.json(cart);
 };
 
 const updateItem = async (req, res) => {
@@ -55,7 +55,7 @@ const updateItem = async (req, res) => {
   await cart.save();
 
   await cart.populate("items.productId", "name images purchaseLimit");
-  return res.json(cart);
+  res.json(cart);
 };
 
 const removeItem = async (req, res) => {
@@ -69,7 +69,7 @@ const removeItem = async (req, res) => {
   await cart.save();
 
   await cart.populate("items.productId", "name images purchaseLimit");
-  return res.json(cart);
+  res.json(cart);
 };
 
 const clearCart = async (req, res) => {
@@ -79,7 +79,7 @@ const clearCart = async (req, res) => {
   await cart.save();
 
   await cart.populate("items.productId", "name images purchaseLimit");
-  return res.json(cart);
+  res.json(cart);
 };
 
 module.exports = {
