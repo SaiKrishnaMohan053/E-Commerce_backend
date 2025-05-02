@@ -10,7 +10,7 @@ const {
   getAllOrders,
   cancelOrder,
 } = require('../controllers/orderController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authmiddleware');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
