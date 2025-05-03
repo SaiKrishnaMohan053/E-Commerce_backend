@@ -163,7 +163,7 @@ const getMyOrders = async (req, res) => {
 };
 
 const getOrderById = async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('user', 'email storeName').populate('orderItems.product', 'images name');
+  const order = await Order.findById(req.params.id).populate('user', 'email storeName').populate({ path:'orderItems.product', select: 'images name' });
   if (order && order.user._id.equals(req.user._id) || req.user.isAdmin) {
     return res.json(order);
   }
