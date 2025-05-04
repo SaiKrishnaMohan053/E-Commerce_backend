@@ -1,4 +1,5 @@
 const User = require('../models/user.js');
+const Product = require('../models/product.js');
 const generateToken = require('../utils/generateToken.js');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -206,6 +207,37 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const getWishlist = async (req, res) => {
+  const user = await User.findById(req.user._id).populate('wishlist');
+  res.json(user.wishlist);
+};
+
+const addToWishlist = async (req, res) => {
+  const { productId } = req.params;
+  const prod = await Product.findById(productId);
+  if (!prod) {
+    res.status(404).json({ message: 'Product not found' });
+  }
+  const user = await User.findById(req.user._id);
+  if (!user.wishlist.includes(productId)) {
+    user.wishlist.push(productId);
+    await user.save();
+  }
+  const populated = await user.populate('wishlist');
+  res.json(populated.wishlist);
+};
+
+const removeFromWishlist = async (req, res) => {
+  const { productId } = req.params;
+  const user = await User.findById(req.user._id);
+  user.wishlist = user.wishlist.filter(
+    id => id.toString() !== productId
+  );
+  await user.save();
+  const populated = await user.populate('wishlist');
+  res.json(populated.wishlist);
+};
+
 module.exports = {
   loginUser,
   registerUser,
@@ -217,5 +249,8 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-  updateUserProfile
+  updateUserProfile,
+  getWishlist,
+  addToWishlist,
+  removeFromWishlist
 };

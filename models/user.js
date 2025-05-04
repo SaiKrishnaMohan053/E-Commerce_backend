@@ -27,7 +27,12 @@ const userSchema = new mongoose.Schema({
 
   resetPasswordToken: { type: String, default: undefined },
   resetPasswordExpires: { type: Date, default: undefined },
-});
+
+  wishlist: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  }],
+}, { timestamps: true });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);

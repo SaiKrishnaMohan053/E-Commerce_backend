@@ -1,11 +1,14 @@
 const express = require('express');
-const { loginUser, registerUser, requestPasswordReset, resetPassword, approveUser, getUsers, getUserById, updateUser, deleteUser, deleteUserIfDocsIncorrect, updateUserProfile } = require('../controllers/userController.js');
+const { loginUser, registerUser, requestPasswordReset, resetPassword, approveUser, getUsers, getUserById, updateUser, deleteUser, deleteUserIfDocsIncorrect, updateUserProfile, getWishlist, addToWishlist, removeFromWishlist } = require('../controllers/userController.js');
 const { protect, admin } = require('../middleware/authmiddleware.js');
 const multer = require('multer');
 
 const router = express.Router();
 const upload = multer();
 
+router.get('/wishlist', protect, getWishlist);
+router.post('/wishlist/:productId', protect, addToWishlist);
+router.delete('/wishlist/:productId', protect, removeFromWishlist);
 router.post('/login', loginUser);
 router.post('/register', upload.fields([{ name: 'abcLicense', maxCount: 1 }, { name: 'salesTaxLicense', maxCount: 1 }]), registerUser);
 router.post('/forgot-password', requestPasswordReset);
