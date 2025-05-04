@@ -34,16 +34,20 @@ const upload = multer({ storage });
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = [ process.env.FRONTEND_URL, 'http://localhost:3000' ];
+const allowedOrigins = process.env.FRONTEND_URLS
+  ? process.env.FRONTEND_URLS.split(',').map(s => s.trim())
+  : [];
+allowedOrigins.push('http://localhost:3000');
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin(origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `CORS policy: request from origin ${origin} not allowed.`;
-      return callback(new Error(msg), false);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
-    return callback(null, true);
+
+    callback(new Error(`CORS policy: request from origin ${origin} not allowed.`), false);
   },
   credentials: true,
 }));
