@@ -34,11 +34,10 @@ const upload = multer({ storage });
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = process.env.FRONTEND_URLS
-  ? process.env.FRONTEND_URLS.split(',').map(s => s.trim())
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(s => s.trim())
   : [];
 allowedOrigins.push('http://localhost:3000');
-console.log(allowedOrigins);
 app.use(cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
