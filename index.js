@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
-const { Server } = require('socket.io');
 const productRoutes = require('./routes/productRoute.js');
 const userRoutes = require('./routes/userRoute.js');
 const cartRoutes = require('./routes/cartRoutes.js');
@@ -15,7 +14,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-const { protect, admin } = require('./middleware/authmiddleware.js');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 dotenv.config();
@@ -55,10 +53,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(rateLimit({
+const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-}));
+  message: 'Too many requests. Please try again later.',
+  skip: req => [
+    '/api/cart',
+    '/api/orders',
+    '/api/products',
+    '/api/admin', 
+  ].some(path => req.originalUrl.startsWith(path))
+})
+app.use(globalLimiter);
 
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
@@ -85,7 +91,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/admin', protect, admin, adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

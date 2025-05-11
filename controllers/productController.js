@@ -303,6 +303,36 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+
+    const results = await Promise.all(categories.map(async (cat) => {
+      let subCategories = await Product.distinct('subCategories', { category: cat });
+      subCategories = subCategories.filter(v => typeof v === 'string' && v.trim());
+
+      const doc = await Product.findOne({ category: cat }).lean();
+      let imageUrl = null;
+      if (doc) {
+        if (typeof doc.image === 'string' && doc.image.trim()) {
+          imageUrl = doc.image;
+        } else if (typeof doc.imageUrl === 'string' && doc.imageUrl.trim()) {
+          imageUrl = doc.imageUrl;
+        } else if (Array.isArray(doc.images) && doc.images.length > 0) {
+          imageUrl = doc.images[0].url || null;
+        }
+      }
+
+      return { category: cat, imageUrl, subCategories };
+    }));
+
+    return res.json(results);
+  } catch (err) {
+    console.error('Get categories & sub-categories error:', err);
+    return res.status(500).json({ message: 'Failed to load categories' });
+  }
+};
+
 module.exports = {
   createProduct,
   updateProductStock,
@@ -310,4 +340,5 @@ module.exports = {
   getProducts,
   getProductById,
   deleteProduct,
+  getCategories
 };

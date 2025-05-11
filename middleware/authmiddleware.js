@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.js');
-const logger = require('../utils/logger'); // Custom logger if using winston/pino
+const logger = require('../utils/logger');
 
 const protect = async (req, res, next) => {
   try {

@@ -17,13 +17,13 @@ This is the backend e-commerce application built for warehouse-based product ord
 ### Product Management (Admin)
 
 * **CRUD Products**
-
   * Support for products with or without flavor variants
   * Optional deals and purchase limits
 * **Flavored Products**: individual stock, price, and sold count per flavor
 * **Stock Management**: update stock globally or per flavor
 * **Deal Management**: percentage or fixed discounts
 * **Image Handling**: upload and delete images via AWS S3
+* **Category & Subcategory Management**: dynamically retrieve categories & subcategories from the product collection
 
 ### Product Retrieval & Filtering
 
@@ -31,6 +31,7 @@ This is the backend e-commerce application built for warehouse-based product ord
 * **Filters**: category, subCategory, name search, price range, deals
 * **Sort**: price (asc/desc), newest, popularity (sold count), name (A→Z)
 * **Fetch Single Product** by ID
+* **Fetch Categories & Subcategories** for dynamic navigation
 
 ### Cart Management
 
@@ -46,7 +47,6 @@ This is the backend e-commerce application built for warehouse-based product ord
 * **Fetch My Orders** with pagination
 * **Fetch Order by ID** for detailed view
 * **Admin Order Actions**
-
   * Update status (`Pending`, `Processing`, `Order Ready`, `Delivered`, `Pickedup`, `Cancelled`)
   * Upload invoice (PDF or image) to AWS S3
   * Cancel orders
@@ -98,6 +98,7 @@ This is the backend e-commerce application built for warehouse-based product ord
 * `PUT /api/products/:id` – Update product (admin)
 * `DELETE /api/products/:id` – Delete product (admin)
 * `PATCH /api/products/:id/stock` – Update stock or flavor stock (admin)
+* `GET /api/products/getCategories` – Retrieve list of categories & subcategories for navigation
 
 ### Cart
 
@@ -120,6 +121,14 @@ This is the backend e-commerce application built for warehouse-based product ord
 * `POST /api/orders/uploadInvoice/:id/invoice` – Upload invoice file
 
 ---
+
+*Additional Backend Enhancements*:
+
+- **Dynamic Categories Endpoint** implemented: `getCategories` now returns categories with subCategories.
+- **Sales Summary & Sales By Category Reports** endpoints added for custom date ranges and aggregated analytics.
+- **Top 10 Selling products & Top 10 Spenders** endpoints are added.
+- **Daily, Weekly, Monthly Order Trends** and **Order Status Breakdown** APIs integrated.
+- Refactored analytics utility functions for reusable date range and Excel export.
 
 ## Tech Stack
 
