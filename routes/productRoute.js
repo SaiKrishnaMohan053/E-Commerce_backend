@@ -19,6 +19,6 @@ router.post('/addProduct', protect, admin, upload.array('files', 5), createProdu
 router.put('/editProduct/:id', protect, admin, upload.array('files', 5), updateProductInfo);
 router.put('/updateStock/:id', protect, admin, updateProductStock);
 router.delete('/deleteProduct/:id', protect, admin, deleteProduct);
-router.get('/getCategories', protect, getCategories);
+router.get('/getCategories', getCategories);
 
 module.exports = router;
