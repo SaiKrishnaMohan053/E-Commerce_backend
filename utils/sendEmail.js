@@ -69,4 +69,28 @@ const sendApprovalEmail = async (email, name, password) => {
     }
   };  
 
-module.exports = { sendApprovalEmail, sendResetPasswordEmail, sendDocumentRejectionEmail };
+  async function sendWeeklyInventoryReport(buffer, filename = 'inventory-report.xlsx') {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL,   
+      subject: 'Weekly Inventory Metrics',
+      text: `Please find attached the weekly inventory report.`,
+      attachments: [
+        {
+          filename,
+          content: buffer,
+          contentType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        }
+      ],
+    };
+  
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Weekly report sent to ${process.env.ADMIN_EMAIL}`);
+    } catch (err) {
+      console.error('Error sending weekly report:', err);
+    }
+  }  
+
+module.exports = { sendApprovalEmail, sendResetPasswordEmail, sendDocumentRejectionEmail, sendWeeklyInventoryReport };

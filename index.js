@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoute.js');
 const cartRoutes = require('./routes/cartRoutes.js');
 const orderRoutes = require('./routes/orderRoute.js');
 const adminRoutes = require('./routes/adminRoutes.js');
+const adminAlertRoutes = require('./routes/adminAlertsRoutes.js');
 const { errorHandler, notFound } = require('./middleware/errormiddleware.js');
 const multer = require('multer');
 const helmet = require('helmet');
@@ -31,6 +32,7 @@ const upload = multer({ storage });
 
 const app = express();
 const server = http.createServer(app);
+app.set('trust proxy', 1);
 
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(s => s.trim())
@@ -92,6 +94,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminAlertRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
