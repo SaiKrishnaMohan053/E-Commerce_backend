@@ -172,7 +172,7 @@ This is the backend e-commerce application built for warehouse-based product ord
 
 ### Metrics & Reports
 
-- **Compute & store inventory metrics**: daily/weekly via cron  
+- **Compute & store inventory metrics**: weekly via cron  
 - **Weekly Excel report** emailed to admin via `sendWeeklyInventoryReport(buffer)`  
 - Cron schedule: `0 14 * * 5` (Friday at 14:00)  
 

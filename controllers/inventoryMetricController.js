@@ -83,9 +83,7 @@ async function computeMetrics() {
     });
 
     await InventoryMetric.create({ product: prod._id, flavorMetrics });
-  }
-
-  await mongoose.disconnect();  
+  }  
 }
 
 if (require.main === module) {
@@ -98,6 +96,8 @@ if (require.main === module) {
 }
 
 async function weeklyJob() {
+  await computeMetrics();
+  await mongoose.connect(process.env.MONGO_URI);
   const metrics = await InventoryMetric.find().populate('product').lean();
 
   const wb = new ExcelJS.Workbook();
@@ -105,15 +105,19 @@ async function weeklyJob() {
   ws.columns = [
     { header: 'Product', key: 'product', width: 30 },
     { header: 'Flavor',  key: 'flavor',  width: 20 },
+    { header: 'currentStock', key: 'currentStock', width: 12 },
     { header: 'Avg Weekly', key: 'avg',   width: 12 },
     { header: 'Reorder Pt', key: 'rp',    width: 12 },
-    { header: 'Velocity',  key: 'vel',   width: 10 },
+    { header: 'Velocity',  key: 'vel',   width: 10 }
   ];
   metrics.forEach(doc => {
     doc.flavorMetrics.forEach(fm => {
+      const flavorObj = doc.product.flavors?.find(f => f.name === fm.flavorName);
+      const currentStock = (flavorObj?.stock != null) ? flavorObj.stock : doc.product.stock;
       ws.addRow({
         product: doc.product.name,
         flavor:  fm.flavorName || 'N/A',
+        currentStock,
         avg:     Math.round(fm.avgWeeklySales),
         rp:      Math.round(fm.reorderPoint),
         vel:     fm.salesVelocity
@@ -123,9 +127,11 @@ async function weeklyJob() {
 
   const buffer = await wb.xlsx.writeBuffer();
   await sendWeeklyInventoryReport(buffer);
+
+  await mongoose.disconnect();
 }
 
-cron.schedule('0 14 * * 6', () => {
+cron.schedule('0 2 * * 6', () => {
   console.log('Running weekly inventory email job…');
   weeklyJob().catch(console.error);
 });

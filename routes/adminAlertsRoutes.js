@@ -2,10 +2,11 @@ const express = require('express');
 const router  = express.Router();
 const InventoryMetric = require('../models/inventoryMetricModel');
 const { weeklyJob } = require('../controllers//inventoryMetricController');
+const { protect, admin } = require('../middleware/authmiddleware');
 
 const ALLOWED_VELOCITIES = ['Fast', 'Average', 'Slow'];
 
-router.get('/restock-alerts', async (req, res) => {
+router.get('/restock-alerts', protect, admin, async (req, res) => {
   try {
     const { velocity } = req.query;
 
@@ -14,21 +15,28 @@ router.get('/restock-alerts', async (req, res) => {
     }
 
     const metrics = await InventoryMetric.find()
-    .populate('product', 'name sku category subCategories')
+    .populate('product', 'name sku category subCategories stock flavors')
     .lean();
 
     const entries = metrics.flatMap(doc =>
       doc.flavorMetrics
         .filter(fm => !velocity || fm.salesVelocity === velocity)
-        .map(fm => ({
-          product: doc.product,
-          flavorName: fm.flavorName,
-          avgWeeklySales: fm.avgWeeklySales,
-          recommendedWeeklyStock: fm.recommendedWeeklyStock,
-          reorderPoint: fm.reorderPoint,
-          daysOfStockRemaining: fm.daysOfStockRemaining,
-          salesVelocity: fm.salesVelocity
-        }))
+        .map(fm => {
+          const flavorItem = doc.product.flavors?.find(f => f.name === fm.flavorName);
+          const currentStock = (flavorItem && flavorItem.stock != null) ? flavorItem.stock: doc.product.stock;
+          const isLowStock = currentStock < 5;
+          return {
+            product: doc.product,
+            flavorName: fm.flavorName,
+            avgWeeklySales: fm.avgWeeklySales,
+            recommendedWeeklyStock: fm.recommendedWeeklyStock,
+            reorderPoint: fm.reorderPoint,
+            daysOfStockRemaining: fm.daysOfStockRemaining,
+            salesVelocity: fm.salesVelocity,
+            currentStock,
+            isLowStock
+          }
+        })
     );
 
     entries.sort((a, b) => a.daysOfStockRemaining - b.daysOfStockRemaining);
