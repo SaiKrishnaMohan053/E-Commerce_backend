@@ -97,7 +97,6 @@ if (require.main === module) {
 
 async function weeklyJob() {
   await computeMetrics();
-  await mongoose.connect(process.env.MONGO_URI);
   const metrics = await InventoryMetric.find().populate('product').lean();
 
   const wb = new ExcelJS.Workbook();
@@ -127,8 +126,6 @@ async function weeklyJob() {
 
   const buffer = await wb.xlsx.writeBuffer();
   await sendWeeklyInventoryReport(buffer);
-
-  await mongoose.disconnect();
 }
 
 cron.schedule('0 2 * * 6', () => {
