@@ -158,8 +158,10 @@ const deleteUserIfDocsIncorrect = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    const users = await User.find().lean();
+    const unapprovedCount = await User.countDocuments({ isApproved: false });
+
+    res.json({ users, unapprovedCount });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
