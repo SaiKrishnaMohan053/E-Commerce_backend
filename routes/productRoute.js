@@ -7,7 +7,8 @@ const {
   getProducts,
   getProductById,
   deleteProduct,
-  getCategories
+  getCategories,
+  getDashboardData
 } = require('../controllers/productController');
 const { protect, admin } = require('../middleware/authmiddleware.js');
 const multer = require('multer');
@@ -20,5 +21,6 @@ router.put('/editProduct/:id', protect, admin, upload.array('files', 5), updateP
 router.put('/updateStock/:id', protect, admin, updateProductStock);
 router.delete('/deleteProduct/:id', protect, admin, deleteProduct);
 router.get('/getCategories', getCategories);
+router.get('/getDashboard', getDashboardData);
 
 module.exports = router;

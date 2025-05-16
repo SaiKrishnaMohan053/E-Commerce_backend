@@ -1,4 +1,5 @@
 const Product = require('../models/product.js');
+const Order = require('../models/order.js');
 const { uploadToS3, deleteFromS3 } = require('../utils/s3upload.js');
 
 const createProduct = async (req, res) => {
@@ -333,6 +334,76 @@ const getCategories = async (req, res) => {
   }
 };
 
+const getDashboardData = async (req, res) => {
+  const sellersLimit = parseInt(req.query.sellersLimit, 10) || 20;
+  const dealsLimit = parseInt(req.query.dealsLimit, 10) || 20;
+  const arrivalsLimit = parseInt(req.query.arrivalsLimit, 10) || 20;
+
+  const topSellers = await Order.aggregate([
+    { $match: { status: { $in: ["Order Ready","Delivered","Pickedup"] } } },
+    { $unwind: "$orderItems" },
+    {
+      $group: {
+        _id: "$orderItems.product",
+        totalQuantity: { $sum: "$orderItems.qty" },
+        totalRevenue: { $sum: { $multiply: ["$orderItems.qty", "$orderItems.price"] } }
+      }
+    },
+    { $sort: { totalRevenue: -1, totalQuantity: -1 } },
+    { $limit: sellersLimit },
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productDetails"
+      }
+    },
+    { $unwind: "$productDetails" },
+    {
+      $project: {
+        _id: "$productDetails._id",
+        name: "$productDetails.name",
+        price: "$productDetails.price",
+        image: { $arrayElemAt: ["$productDetails.images", 0] },
+        isDeal: "$productDetails.isDeal",
+        totalQuantity: 1,
+        totalRevenue: 1
+      }
+    }
+  ]);
+
+  const dealDocs = await Product.find({ isDeal: true })
+    .sort({ createdAt: -1 })
+    .limit(dealsLimit)
+    .select("name price images isDeal discountType discountValue");
+
+  const deals = dealDocs.map((prod) => ({
+    _id: prod._id,
+    name: prod.name,
+    price: prod.price,
+    image: prod.images[0],
+    isDeal: prod.isDeal,
+    discountType: prod.discountType,
+    discountValue: prod.discountValue,
+  }));
+
+  const arrivalDocs = await Product.find()
+    .sort({ createdAt: -1 })
+    .limit(arrivalsLimit)
+    .select("name price images isDeal");
+
+  const newArrivals = arrivalDocs.map((prod) => ({
+    _id: prod._id,
+    name: prod.name,
+    price: prod.price,
+    image: prod.images[0],
+    isDeal: prod.isDeal,
+  }));
+
+  res.json({ topSellers, deals, newArrivals });
+};
+
 module.exports = {
   createProduct,
   updateProductStock,
@@ -340,5 +411,6 @@ module.exports = {
   getProducts,
   getProductById,
   deleteProduct,
-  getCategories
+  getCategories,
+  getDashboardData
 };
