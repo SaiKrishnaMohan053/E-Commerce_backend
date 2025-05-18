@@ -97,12 +97,15 @@ if (require.main === module) {
 
 async function weeklyJob() {
   await computeMetrics();
-  const metrics = await InventoryMetric.find().populate('product').lean();
+  const metrics = await InventoryMetric.find()
+  .populate('product', 'name sku flavors stock')
+  .lean();
 
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet('Inventory');
   ws.columns = [
     { header: 'Product', key: 'product', width: 30 },
+    { header: 'SKU', key: 'sku', width: 25 },
     { header: 'Flavor',  key: 'flavor',  width: 20 },
     { header: 'currentStock', key: 'currentStock', width: 12 },
     { header: 'Avg Weekly', key: 'avg',   width: 12 },
@@ -115,6 +118,7 @@ async function weeklyJob() {
       const currentStock = (flavorObj?.stock != null) ? flavorObj.stock : doc.product.stock;
       ws.addRow({
         product: doc.product.name,
+        sku:     doc.product.sku || 'N/A',
         flavor:  fm.flavorName || 'N/A',
         currentStock,
         avg:     Math.round(fm.avgWeeklySales),

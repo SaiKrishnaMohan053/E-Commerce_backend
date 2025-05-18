@@ -201,7 +201,7 @@ const getProducts = async (req, res) => {
       sort,
       page,
       limit,
-      name,
+      search,
       excludeId,
     } = req.query;
 
@@ -210,8 +210,11 @@ const getProducts = async (req, res) => {
 
     let filter = {};
 
-    if (name) {
-      filter.name = { $regex: name, $options: "i" };
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { sku: { $regex: search, $options: "i" } },
+      ];
     }
 
     if (excludeId) {

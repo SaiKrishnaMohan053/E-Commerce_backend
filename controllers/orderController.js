@@ -2,6 +2,10 @@ const Order = require('../models/order');
 const Product = require('../models/product');
 const { uploadToS3, deleteFromS3 } = require('../utils/s3upload');
 
+const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+const random = Math.floor(1000 + Math.random() * 9000);
+const orderNumber = `ORD-${dateStr}-${random}`;
+
 const addOrder = async (req, res) => {
   const { orderItems, orderMethod } = req.body;
   const address = req.body.shippingAddress?.address;
@@ -74,6 +78,7 @@ const addOrder = async (req, res) => {
   );
 
   const order = new Order({
+    orderNumber,
     user: req.user._id,
     orderItems   : orderItemsForDb,
     shippingAddress: { address },
