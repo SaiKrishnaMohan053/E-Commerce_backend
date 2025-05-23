@@ -3,12 +3,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
-const productRoutes = require('./routes/productRoute.js');
-const userRoutes = require('./routes/userRoute.js');
-const cartRoutes = require('./routes/cartRoutes.js');
-const orderRoutes = require('./routes/orderRoute.js');
-const adminRoutes = require('./routes/adminRoutes.js');
-const adminAlertRoutes = require('./routes/adminAlertsRoutes.js');
 const { errorHandler, notFound } = require('./middleware/errormiddleware.js');
 const multer = require('multer');
 const helmet = require('helmet');
@@ -16,6 +10,13 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+
+const productRoutes = require('./routes/productRoute.js');
+const userRoutes = require('./routes/userRoute.js');
+const cartRoutes = require('./routes/cartRoutes.js');
+const orderRoutes = require('./routes/orderRoute.js');
+const adminRoutes = require('./routes/adminRoutes.js');
+const adminAlertRoutes = require('./routes/adminAlertsRoutes.js');
 
 dotenv.config();
 
@@ -99,7 +100,18 @@ app.use('/api/admin', adminAlertRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-mongoose.connect(process.env.MONGO_URI).then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
-  
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error('DB connection error:', err));
+
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () =>
+    console.log(`Server running on port ${PORT}`)
+  );
+}
+
+module.exports = app;

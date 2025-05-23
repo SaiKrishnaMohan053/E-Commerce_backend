@@ -34,3 +34,54 @@
 2025-05-14 19:41:33 [ERROR]: Token verification failed | {"error":"Client must be connected before running operations"}
 2025-05-14 19:41:46 [ERROR]: Token verification failed | {"error":"Client must be connected before running operations"}
 2025-05-14 19:41:47 [ERROR]: Token verification failed | {"error":"Client must be connected before running operations"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:10:21 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:16:44 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:16:44 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:25:58 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:25:58 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:29:35 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:29:35 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:35:06 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:35:06 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:54:28 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:54:28 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:26 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:26 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:29 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:29 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:08:41 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:17:33 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:33 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:36 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:36 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:00 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:00 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:02 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:02 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 13:20:48 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:20:48 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-20 13:23:47 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:23:47 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-20 13:24:09 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:24:09 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"oops"}

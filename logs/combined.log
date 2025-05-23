@@ -30103,3 +30103,157 @@
 2025-05-18 13:50:36 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
 2025-05-18 13:50:36 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
 2025-05-18 13:50:36 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:50 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:57 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:57 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:56:57 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:03 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:03 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:03 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:26 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:26 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:26 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:31 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:31 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:31 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:36 [INFO]: User authenticated | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:36 [INFO]: Checking admin access | {"email":"usmail053@gmail.com"}
+2025-05-18 13:57:36 [INFO]: Admin access granted | {"email":"usmail053@gmail.com"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [WARN]: No token provided in authorization header
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:53:11 [WARN]: No token provided in authorization header
+2025-05-20 10:55:51 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [WARN]: No token provided in authorization header
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:55:51 [WARN]: No token provided in authorization header
+2025-05-20 10:57:51 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [WARN]: No token provided in authorization header
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:57:51 [WARN]: No token provided in authorization header
+2025-05-20 10:59:43 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [WARN]: No token provided in authorization header
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 10:59:43 [WARN]: No token provided in authorization header
+2025-05-20 11:02:08 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [WARN]: No token provided in authorization header
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:02:08 [WARN]: No token provided in authorization header
+2025-05-20 11:10:21 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:10:21 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:10:21 [WARN]: No token provided in authorization header
+2025-05-20 11:10:21 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:10:21 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:10:21 [WARN]: No token provided in authorization header
+2025-05-20 11:16:44 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:16:44 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:16:44 [WARN]: No token provided in authorization header
+2025-05-20 11:16:44 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:16:44 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:16:44 [WARN]: No token provided in authorization header
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:19:39 [WARN]: No token provided in authorization header
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:19:39 [WARN]: No token provided in authorization header
+2025-05-20 11:25:58 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:25:58 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:25:58 [WARN]: No token provided in authorization header
+2025-05-20 11:25:58 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:25:58 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:25:58 [WARN]: No token provided in authorization header
+2025-05-20 11:29:35 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:29:35 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:29:35 [WARN]: No token provided in authorization header
+2025-05-20 11:29:35 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:29:35 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:29:35 [WARN]: No token provided in authorization header
+2025-05-20 11:35:06 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:35:06 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:35:06 [WARN]: No token provided in authorization header
+2025-05-20 11:35:06 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:35:06 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:35:06 [WARN]: No token provided in authorization header
+2025-05-20 11:54:25 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 11:54:25 [WARN]: User not found for token | {"token":"valid.token.here"}
+2025-05-20 11:54:25 [WARN]: No token provided in authorization header
+2025-05-20 11:54:28 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:54:28 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 11:54:28 [WARN]: No token provided in authorization header
+2025-05-20 12:01:26 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:26 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:29 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:01:29 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:08:39 [INFO]: User authenticated | {"email":"test@example.com"}
+2025-05-20 12:08:39 [WARN]: User not found for token | {"token":"validtoken"}
+2025-05-20 12:08:41 [INFO]: User authenticated | {"email":"old@example.com"}
+2025-05-20 12:08:41 [ERROR]: Token verification failed | {"error":"User.findById(...).select is not a function"}
+2025-05-20 12:17:33 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:33 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:36 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:17:36 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:00 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:00 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:02 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:19:02 [ERROR]: Token verification failed | {"error":"specificMockImpl.apply is not a function"}
+2025-05-20 12:21:21 [INFO]: User authenticated | {"email":"old@example.com"}
+2025-05-20 12:21:21 [WARN]: User not found for token | {"token":"validtoken"}
+2025-05-20 13:20:48 [WARN]: No token provided in authorization header
+2025-05-20 13:20:48 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:20:48 [WARN]: User not found for token | {"token":"goodtoken"}
+2025-05-20 13:20:48 [INFO]: User authenticated | {"email":"e@e.com"}
+2025-05-20 13:20:48 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-20 13:20:48 [WARN]: Admin check failed: no user in request
+2025-05-20 13:20:48 [INFO]: Checking admin access | {"email":"u@u.com"}
+2025-05-20 13:20:48 [WARN]: Admin access denied | {"email":"u@u.com"}
+2025-05-20 13:20:48 [INFO]: Checking admin access | {}
+2025-05-20 13:20:48 [INFO]: Admin access granted | {}
+2025-05-20 13:23:47 [WARN]: No token provided in authorization header
+2025-05-20 13:23:47 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:23:47 [WARN]: User not found for token | {"token":"goodtoken"}
+2025-05-20 13:23:47 [INFO]: User authenticated | {"email":"e@e.com"}
+2025-05-20 13:23:47 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-20 13:23:47 [WARN]: Admin check failed: no user in request
+2025-05-20 13:23:47 [INFO]: Checking admin access | {"email":"u@u.com"}
+2025-05-20 13:23:47 [WARN]: Admin access denied | {"email":"u@u.com"}
+2025-05-20 13:23:47 [INFO]: Checking admin access | {}
+2025-05-20 13:23:47 [INFO]: Admin access granted | {}
+2025-05-20 13:24:09 [WARN]: No token provided in authorization header
+2025-05-20 13:24:09 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-20 13:24:09 [WARN]: User not found for token | {"token":"goodtoken"}
+2025-05-20 13:24:09 [INFO]: User authenticated | {"email":"e@e.com"}
+2025-05-20 13:24:09 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-20 13:24:09 [WARN]: Admin check failed: no user in request
+2025-05-20 13:24:09 [INFO]: Checking admin access | {"email":"u@u.com"}
+2025-05-20 13:24:09 [WARN]: Admin access denied | {"email":"u@u.com"}
+2025-05-20 13:24:09 [INFO]: Checking admin access | {}
+2025-05-20 13:24:09 [INFO]: Admin access granted | {}
+2025-05-23 12:22:35 [WARN]: No token provided in authorization header
+2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-23 12:22:35 [WARN]: User not found for token | {"token":"goodtoken"}
+2025-05-23 12:22:35 [INFO]: User authenticated | {"email":"e@e.com"}
+2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-23 12:22:35 [WARN]: Admin check failed: no user in request
+2025-05-23 12:22:35 [INFO]: Checking admin access | {"email":"u@u.com"}
+2025-05-23 12:22:35 [WARN]: Admin access denied | {"email":"u@u.com"}
+2025-05-23 12:22:35 [INFO]: Checking admin access | {}
+2025-05-23 12:22:35 [INFO]: Admin access granted | {}

@@ -132,9 +132,11 @@ async function weeklyJob() {
   await sendWeeklyInventoryReport(buffer);
 }
 
-cron.schedule('0 2 * * 6', () => {
-  console.log('Running weekly inventory email job…');
-  weeklyJob().catch(console.error);
-});
+if (process.env.NODE_ENV !== 'test') {
+  cron.schedule('0 2 * * 6', () => {
+    console.log('Running weekly inventory email job…');
+    weeklyJob().catch(console.error);
+  });
+}
 
 module.exports = { computeMetrics, weeklyJob };
