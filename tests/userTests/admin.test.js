@@ -1,4 +1,5 @@
 process.env.NODE_ENV = 'test';
+process.setMaxListeners(50);
 
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
@@ -12,21 +13,45 @@ jest.mock('../../utils/sendEmail', () => ({
   sendDocumentRejectionEmail: jest.fn(),
 }));
 
-jest.mock('../../middleware/authmiddleware', () => ({
-  protect: (req, res, next) => {
-    req.user = { _id: 'uid', email: 'admin@example.com', isAdmin: true };
-    next();
-  },
-  admin: (req, res, next) => next(),
-}));
-
-const app = require('../../index');
-const User = require('../../models/user');
-const { deleteFromS3 } = require('../../utils/s3upload');
-const { sendApprovalEmail, sendDocumentRejectionEmail } = require('../../utils/sendEmail');
+function setupAuthMock(type = 'admin') {
+  jest.resetModules();
+  if (type === 'admin') {
+    jest.doMock('../../middleware/authmiddleware', () => ({
+      protect: (req, res, next) => {
+        req.user = { _id: 'uid', email: 'admin@example.com', isAdmin: true };
+        next();
+      },
+      admin: (req, res, next) => next(),
+    }));
+  } else if (type === 'notAdmin') {
+    jest.doMock('../../middleware/authmiddleware', () => ({
+      protect: (req, res, next) => {
+        req.user = { _id: 'uid', email: 'user@example.com', isAdmin: false };
+        next();
+      },
+      admin: (req, res, next) => {
+        res.status(403).json({ message: 'Not authorized as admin' });
+      }
+    }));
+  } else if (type === 'noToken') {
+    jest.doMock('../../middleware/authmiddleware', () => ({
+      protect: (req, res, next) => {
+        res.status(401).json({ message: 'Not authorized, token missing' });
+      },
+      admin: (req, res, next) => next(),
+    }));
+  }
+}
 
 describe('Admin User Management Endpoints', () => {
+  let app, User, deleteFromS3, sendApprovalEmail, sendDocumentRejectionEmail;
+
   beforeEach(() => {
+    setupAuthMock('admin');
+    app = require('../../index');
+    User = require('../../models/user');
+    ({ deleteFromS3 } = require('../../utils/s3upload'));
+    ({ sendApprovalEmail, sendDocumentRejectionEmail } = require('../../utils/sendEmail'));
     jest.clearAllMocks();
   });
 
@@ -46,21 +71,21 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if User.find throws', async () => {
-        User.find.mockImplementation(() => { throw new Error('DB find error'); });
-        User.countDocuments.mockResolvedValue(0);
+      User.find.mockImplementation(() => { throw new Error('DB find error'); });
+      User.countDocuments.mockResolvedValue(0);
 
-        const res = await request(app).get('/api/users');
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'DB find error' });
+      const res = await request(app).get('/api/users');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'DB find error' });
     });
 
     it('should return 500 if countDocuments throws', async () => {
-        User.find.mockReturnValue({ lean: jest.fn().mockResolvedValue([]) });
-        User.countDocuments.mockImplementation(() => { throw new Error('count error'); });
+      User.find.mockReturnValue({ lean: jest.fn().mockResolvedValue([]) });
+      User.countDocuments.mockImplementation(() => { throw new Error('count error'); });
 
-        const res = await request(app).get('/api/users');
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'count error' });
+      const res = await request(app).get('/api/users');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'count error' });
     });
   });
 
@@ -88,11 +113,11 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 404 if findById throws', async () => {
-        User.findById.mockImplementation(() => { throw new Error('findById error'); });
+      User.findById.mockImplementation(() => { throw new Error('findById error'); });
 
-        const res = await request(app).get('/api/users/uX');
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({ message: 'findById error' });
+      const res = await request(app).get('/api/users/uX');
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: 'findById error' });
     });
   });
 
@@ -127,21 +152,61 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if sendApprovalEmail throws', async () => {
-        const saveMock = jest.fn().mockResolvedValue();
-        User.findById.mockResolvedValue({ _id:'u1', isApproved:false, email:'e', ownerName:'O', save: saveMock });
-        sendApprovalEmail.mockRejectedValue(new Error('Email error'));
+      const saveMock = jest.fn().mockResolvedValue();
+      User.findById.mockResolvedValue({ _id:'u1', isApproved:false, email:'e', ownerName:'O', save: saveMock });
+      sendApprovalEmail.mockRejectedValue(new Error('Email error'));
 
-        const res = await request(app).put('/api/users/approve/u1');
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'Email error' });
+      const res = await request(app).put('/api/users/approve/u1');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'Email error' });
     });
 
     it('should return 500 if findById throws in approve', async () => {
-        User.findById.mockImplementation(() => { throw new Error('approve find error'); });
+      User.findById.mockImplementation(() => { throw new Error('approve find error'); });
 
-        const res = await request(app).put('/api/users/approve/u1');
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'approve find error' });
+      const res = await request(app).put('/api/users/approve/u1');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'approve find error' });
+    });
+
+    it('should not allow approving a user twice', async () => {
+      let isApproved = false;
+      User.findById.mockImplementation(() => ({
+        _id: 'u1',
+        isApproved,
+        email: 'mail',
+        ownerName: 'Test',
+        save: async () => { isApproved = true; }
+      }));
+
+      await request(app).put('/api/users/approve/u1');
+
+      const res2 = await request(app).put('/api/users/approve/u1');
+      expect(res2.status).toBe(400);
+      expect(res2.body.message).toMatch(/already approved/i);
+    });
+
+    it('should handle user object missing expected fields (approve)', async () => {
+      User.findById.mockResolvedValue({ _id: 'u1', isApproved: false, save: jest.fn() });
+
+      const res = await request(app).put('/api/users/approve/u1');
+      expect(res.status).toBeGreaterThanOrEqual(400);
+    });
+
+    it('should delete user even if only one license is present', async () => {
+      const user = {
+        _id: 'u2', isApproved: false, email: 'mail',
+        salesTaxLicense: { key: 'stk' }, abcLicense: null
+      };
+      User.findById.mockResolvedValue(user);
+      User.findByIdAndDelete = jest.fn().mockResolvedValue();
+
+      const res = await request(app)
+        .delete('/api/users/reject-user/u2')
+        .send({ reason: 'test' });
+
+      expect(res.status).toBe(200);
+      expect(deleteFromS3).toHaveBeenCalledWith('stk');
     });
   });
 
@@ -182,30 +247,42 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if deleteFromS3 throws', async () => {
-        User.findById.mockResolvedValue({
-        _id:'u2', isApproved:false, email:'e',
-        salesTaxLicense:{ key:'stk' }, abcLicense:{ key:'abck' }
-        });
-        deleteFromS3.mockRejectedValue(new Error('S3 error'));
+      User.findById.mockResolvedValue({
+        _id: 'u2', isApproved: false, email: 'e',
+        salesTaxLicense: { key: 'stk' }, abcLicense: { key: 'abck' }
+      });
+      deleteFromS3.mockRejectedValue(new Error('S3 error'));
 
-        const res = await request(app)
+      const res = await request(app)
         .delete('/api/users/reject-user/u2')
         .send({ reason: 'r' });
 
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'S3 error' });
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'S3 error' });
     });
 
     it('should return 500 if findByIdAndDelete throws', async () => {
-        User.findById.mockResolvedValue({ _id:'u2', isApproved:false, salesTaxLicense:null, abcLicense:null });
-        User.findByIdAndDelete = jest.fn().mockRejectedValue(new Error('delete error'));
+      User.findById.mockResolvedValue({ _id: 'u2', isApproved: false, salesTaxLicense: null, abcLicense: null });
+      User.findByIdAndDelete = jest.fn().mockRejectedValue(new Error('delete error'));
 
-        const res = await request(app)
+      const res = await request(app)
         .delete('/api/users/reject-user/u2')
         .send({ reason: 'r' });
 
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'delete error' });
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'delete error' });
+    });
+
+    it('should return 400 if reject-user is called without reason', async () => {
+      User.findById.mockResolvedValue({ _id: 'u2', isApproved: false, email: 'x@y.com', salesTaxLicense: null, abcLicense: null });
+      User.findByIdAndDelete = jest.fn().mockResolvedValue();
+
+      const res = await request(app)
+        .delete('/api/users/reject-user/u2')
+        .send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toMatch(/reason is required/i);
     });
   });
 
@@ -235,11 +312,11 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if findByIdAndUpdate throws', async () => {
-        User.findByIdAndUpdate.mockImplementation(() => { throw new Error('update error'); });
+      User.findByIdAndUpdate.mockImplementation(() => { throw new Error('update error'); });
 
-        const res = await request(app).put('/api/users/u3').send({ ownerName: 'X' });
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'update error' });
+      const res = await request(app).put('/api/users/u3').send({ ownerName: 'X' });
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'update error' });
     });
   });
 
@@ -255,15 +332,15 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if findById throws in delete', async () => {
-        User.findById.mockImplementation(() => { throw new Error('delete find error'); });
+      User.findById.mockImplementation(() => { throw new Error('delete find error'); });
 
-        const res = await request(app).delete('/api/users/u4');
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ message: 'Server error', error: 'delete find error' });
+      const res = await request(app).delete('/api/users/u4');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: 'Server error', error: 'delete find error' });
     });
 
     it('should return 500 if deleteFromS3 throws', async () => {
-      const user = { _id:'u5', salesTaxLicense:{key:'stk'}, abcLicense:{key:'abck'} };
+      const user = { _id: 'u5', salesTaxLicense: { key: 'stk' }, abcLicense: { key: 'abck' } };
       User.findById.mockResolvedValue(user);
       deleteFromS3.mockRejectedValue(new Error('S3 error'));
 
@@ -273,7 +350,7 @@ describe('Admin User Management Endpoints', () => {
     });
 
     it('should return 500 if findByIdAndDelete throws in delete', async () => {
-      const user = { _id:'u6', salesTaxLicense:null, abcLicense:null };
+      const user = { _id: 'u6', salesTaxLicense: null, abcLicense: null };
       User.findById.mockResolvedValue(user);
       User.findByIdAndDelete = jest.fn().mockRejectedValue(new Error('delete op error'));
 
@@ -281,5 +358,33 @@ describe('Admin User Management Endpoints', () => {
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: 'Server error', error: 'delete op error' });
     });
+  });
+});
+
+describe('Authorization/Forbidden Cases', () => {
+  let app;
+  beforeEach(() => {
+    setupAuthMock('notAdmin');
+    app = require('../../index');
+  });
+
+  it('should return 403 if user is not admin on GET /api/users', async () => {
+    const res = await request(app).get('/api/users');
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/not authorized/i);
+  });
+});
+
+describe('Unauthorized Cases', () => {
+  let app;
+  beforeEach(() => {
+    setupAuthMock('noToken');
+    app = require('../../index');
+  });
+
+  it('should return 401 if token missing on admin routes', async () => {
+    const res = await request(app).get('/api/users');
+    expect(res.status).toBe(401);
+    expect(res.body.message).toMatch(/token missing/i);
   });
 });

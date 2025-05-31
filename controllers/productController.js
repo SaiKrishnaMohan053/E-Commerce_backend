@@ -19,6 +19,11 @@ const createProduct = async (req, res) => {
       soldCount
     } = req.body;
 
+    if (!name) return res.status(400).json({ message: 'Name is required' });
+    if (!category) return res.status(400).json({ message: 'Category is required' });
+    if (!description) return res.status(400).json({ message: 'Description is required' });
+    if (!price) return res.status(400).json({ message: 'Price is required' });
+
     let images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
@@ -53,8 +58,11 @@ const createProduct = async (req, res) => {
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
   } catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.sku) {
+      return res.status(400).json({ message: 'Product with this SKU already exists' });
+    }
     console.error('Error creating product:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message || error });
   }
 };
 
@@ -185,7 +193,10 @@ const updateProductInfo = async (req, res) => {
     const updated = await product.save();
     res.json(updated);
   } catch (err) {
-    console.error("Error updating product info:", err);
+   console.error("Error updating product info:", err);
+    if (err.message && err.message.includes('Cast to ObjectId')) {
+      return res.status(404).json({ message: err.message });
+    }
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };

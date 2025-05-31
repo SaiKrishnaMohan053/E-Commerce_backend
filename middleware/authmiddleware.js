@@ -51,4 +51,21 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+const employee = (req, res, next) => {
+  if (!req.user) {
+    logger.warn("Employee check failed: no user in request");
+    return res.status(401).json({ message: 'Not authorized, user not found' });
+  }
+
+  logger.info("Checking employee access", { email: req.user.email });
+
+  if (req.user.isEmployee === true || req.user.isAdmin === true) {
+    logger.info("Employee access granted", { email: req.user.email });
+    next();
+  } else {
+    logger.warn("Employee access denied", { email: req.user.email });
+    return res.status(403).json({ message: 'Not authorized as employee' });
+  }
+};
+
+module.exports = { protect, admin, employee };

@@ -75,6 +75,24 @@ describe('protect middleware', () => {
     expect(res.json).toHaveBeenCalledWith({ message: 'Not authorized, invalid token' });
     expect(next).not.toHaveBeenCalled();
   });
+
+  it('returns 401 if authorization header does not start with Bearer', async () => {
+    req.headers.authorization = 'Token sometoken';
+    await protect(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Not authorized, token missing' });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('returns 401 if jwt.verify returns undefined/null', async () => {
+    req.headers.authorization = 'Bearer sometoken';
+    jwt.verify.mockReturnValue(undefined);
+
+    await protect(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Not authorized, invalid token' });
+    expect(next).not.toHaveBeenCalled();
+  });
 });
 
 describe('admin middleware', () => {
@@ -108,5 +126,20 @@ describe('admin middleware', () => {
     req.user = { isAdmin: true };
     admin(req, res, next);
     expect(next).toHaveBeenCalled();
+  });
+
+  it('returns 403 if user.isAdmin is missing', () => {
+    req.user = { email: 'u@u.com' };
+    admin(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Not authorized as admin' });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('returns 403 if user.isAdmin is not true (non-boolean)', () => {
+    req.user = { isAdmin: 'yes' };
+    admin(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Not authorized as admin' });
   });
 });

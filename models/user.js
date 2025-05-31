@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
 
   isApproved: { type: Boolean, default: false },
   isAdmin: { type: Boolean, default: false },
+  isEmployee: { type: Boolean, default: false },
   password: { type: String, required: false },
 
   resetPasswordToken: { type: String, default: undefined },

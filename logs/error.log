@@ -85,3 +85,11 @@
 2025-05-20 13:24:09 [ERROR]: Token verification failed | {"error":"oops"}
 2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"invalid"}
 2025-05-23 12:22:35 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-30 18:23:21 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-30 18:23:21 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-30 19:19:59 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-30 19:19:59 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-30 19:19:59 [ERROR]: Token verification failed | {"error":"Cannot read properties of undefined (reading 'id')"}
+2025-05-30 20:41:47 [ERROR]: Token verification failed | {"error":"invalid"}
+2025-05-30 20:41:47 [ERROR]: Token verification failed | {"error":"oops"}
+2025-05-30 20:41:47 [ERROR]: Token verification failed | {"error":"Cannot read properties of undefined (reading 'id')"}

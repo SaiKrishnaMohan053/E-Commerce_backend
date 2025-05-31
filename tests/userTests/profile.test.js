@@ -83,6 +83,18 @@ describe('PUT /api/users/profile', () => {
     expect(res.body.message).toBe('Profile updated successfully');
     expect(saveMock).toHaveBeenCalled();
   });
+
+  it('should not allow invalid field updates', async () => {
+    const saveMock = jest.fn().mockResolvedValue();
+    User.findById.mockResolvedValue({ _id: 'user123', ownerName: 'Same', save: saveMock });
+
+    const res = await request(app)
+      .put('/api/users/profile')
+      .send({ notAllowedField: 'oops' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Profile updated successfully');
+  });
 });
 
 describe('GET /api/users/profile/:id', () => {

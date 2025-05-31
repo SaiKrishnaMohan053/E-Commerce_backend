@@ -79,6 +79,8 @@ const registerUser = async (req, res) => {
 const requestPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
     const user = await User.findOne({ email });
 
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -100,12 +102,16 @@ const requestPasswordReset = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { resetToken, newPassword } = req.body;
+    if (!resetToken || !newPassword) {
+      return res.status(400).json({ message: 'Reset token and new password are required' });
+    }
+
     const user = await User.findOne({
       resetPasswordToken: resetToken,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
-    if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
+    if (!user || user.resetPasswordExpires < Date.now()) return res.status(400).json({ message: 'Invalid or expired token' });
 
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = undefined;
@@ -121,7 +127,15 @@ const resetPassword = async (req, res) => {
 const approveUser = async (req, res) => {
   try {
     const user = await findUserById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     if (user.isApproved) return res.status(400).json({ message: 'User is already approved' });
+
+    if (!user.email || !user.ownerName) {
+      return res.status(400).json({ message: 'Required user fields missing' });
+    }
 
     const generatedPassword = Math.random().toString(36).slice(-8);
     user.password = await bcrypt.hash(generatedPassword, 10);
@@ -142,7 +156,13 @@ const deleteUserIfDocsIncorrect = async (req, res) => {
 
     const user = await findUserById(id);
 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     if (user.isApproved) return res.status(400).json({ message: 'Cannot delete an approved user' });
+    if (!req.body.reason) {
+      return res.status(400).json({ message: 'Reason is required' });
+    }
 
     if (user.salesTaxLicense?.key) await deleteFromS3(user.salesTaxLicense.key);
     if (user.abcLicense?.key) await deleteFromS3(user.abcLicense.key);

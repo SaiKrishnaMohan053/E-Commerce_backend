@@ -87,6 +87,15 @@ describe('Forgot & Reset Password API', () => {
       expect(res.body.message).toBe('Server error');
       expect(res.body.error).toBe('Email service down');
     });
+
+    it('should return 400 if email is missing in forgot-password', async () => {
+      const res = await request(app)
+        .post('/api/users/forgot-password')
+        .send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toMatch(/email is required/i);
+    });
   });
 
   describe('POST /api/users/reset-password', () => {
@@ -170,5 +179,55 @@ describe('Forgot & Reset Password API', () => {
       expect(mockUser.password).toBe('hashed123');
       expect(mockUser.save).toHaveBeenCalled();
     });
+  });
+
+  it('should return 400 if resetToken or newPassword missing', async () => {
+    let res = await request(app)
+      .post('/api/users/reset-password')
+      .send({ newPassword: 'pw' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/reset token.*required/i);
+
+    res = await request(app)
+      .post('/api/users/reset-password')
+      .send({ resetToken: 'sometoken' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/new password.*required/i);
+  });
+
+  it('should return 400 if token is expired', async () => {
+    const mockUser = {
+      resetPasswordToken: 'expiredtoken',
+      resetPasswordExpires: Date.now() - 10000,
+      save: jest.fn(),
+    };
+    User.findOne.mockResolvedValue(mockUser);
+
+    const res = await request(app)
+      .post('/api/users/reset-password')
+      .send({ resetToken: 'expiredtoken', newPassword: 'pw' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/invalid or expired token/i);
+  });
+
+  it('should return 500 if user.save fails during reset-password', async () => {
+    const mockUser = {
+      resetPasswordToken: 'goodtoken',
+      resetPasswordExpires: Date.now() + 10000,
+      save: jest.fn().mockRejectedValue(new Error('Save error')),
+    };
+    User.findOne.mockResolvedValue(mockUser);
+    bcrypt.hash.mockResolvedValue('hashed-password');
+
+    const res = await request(app)
+      .post('/api/users/reset-password')
+      .send({ resetToken: 'goodtoken', newPassword: 'pw' });
+
+    expect(res.status).toBe(500);
+    expect(res.body.message).toBe('Server error');
+    expect(res.body.error).toBe('Save error');
   });
 });

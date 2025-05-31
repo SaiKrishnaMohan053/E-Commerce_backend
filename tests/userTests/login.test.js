@@ -135,4 +135,44 @@ describe('POST /api/users/login', () => {
     expect(res.status).toBe(401);
     expect(res.body.message).toMatch(/invalid email or password/i);
   });
+
+  it('should handle user found but missing password field', async () => {
+    User.findOne.mockResolvedValue({
+      email: 'test@example.com',
+      isApproved: true,
+    });
+    const res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'test@example.com', password: 'password123' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toMatch(/invalid email or password/i);
+  });
+
+  it('should treat missing isApproved as not approved', async () => {
+    User.findOne.mockResolvedValue({
+      email: 'test@example.com',
+      password: 'hashed-password',
+    });
+    const res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'test@example.com', password: 'password123' });
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/not approved/i);
+  });
+
+  it('should treat isApproved as false if null or undefined', async () => {
+    User.findOne.mockResolvedValue({
+      email: 'test@example.com',
+      password: 'hashed-password',
+      isApproved: null
+    });
+    const res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'test@example.com', password: 'password123' });
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/not approved/i);
+  });
 });

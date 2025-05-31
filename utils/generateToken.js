@@ -6,7 +6,8 @@ const generateToken = (user) => {
     {
       id: user._id,
       isAdmin: user.isAdmin,
-      isApproved: user.isApproved
+      isApproved: user.isApproved,
+      isEmployee: user.isEmployee,
     },
     process.env.JWT_SECRET,
     {
