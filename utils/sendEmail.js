@@ -32,7 +32,7 @@ const sendApprovalEmail = async (email, name, password) => {
       subject: 'Password Reset Request',
       text: `You have requested to reset your password. Click the link below to reset it:
   
-  https://saiwholesale.vercel.app/reset-password/${resetToken}
+  https://e-comwholesale.vercel.app/reset-password/${resetToken}
   
   If you did not request this, please ignore this email.`,
     };
