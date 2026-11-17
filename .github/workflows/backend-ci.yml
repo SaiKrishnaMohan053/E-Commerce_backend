@@ -1,0 +1,78 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, feature/phase-1]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Node 24 / Jest / MongoDB replica set
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      NODE_ENV: test
+      # Never run tests against Atlas or require production credentials.
+      MONGOMS_VERSION: '7.0.14'
+      MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check source syntax
+        run: |
+          node --check index.js
+          node --check src/shared/persistence/unit-of-work.js
+          node --check src/shared/reliability/operations.js
+      - name: Run full Jest suite with coverage gates
+        run: npm run test:coverage -- --watch=false
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: coverage/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  dependency-audit:
+    name: Dependency vulnerability inventory (non-blocking)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Report existing vulnerabilities without changing lockfile
+        run: npm audit --json > npm-audit.json || true
+      - name: Validate audit JSON (non-blocking inventory)
+        run: node -e "const a=require('./npm-audit.json');console.log('Dependency audit counts:',JSON.stringify(a.metadata?.vulnerabilities||{}))"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-npm-audit
+          path: npm-audit.json
+          retention-days: 7
+          if-no-files-found: ignore

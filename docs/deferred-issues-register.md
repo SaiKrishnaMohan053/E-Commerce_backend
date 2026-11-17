@@ -68,3 +68,14 @@ Each subphase report lists Fixed (with evidence), Newly identified, Still open, 
 - **DEF-002 — OPEN:** Existing order persistence and stock updates remain outside MongoUnitOfWork.
 - **DEF-016 — Replica-set integration verified locally during 1.6; CI coverage still pending 1.8.**
 - **All existing security and dependency issues stay open unless previously independently closed.** No other issue IDs were removed or renumbered.
+
+## Phase 1.8 — CI and quality gates (verification pending)
+
+- **DEF-010 — Proposed fixed:** Deprecated `useNewUrlParser` and `useUnifiedTopology` options removed from `tests/setup.js`. Verify no warnings in full local Jest run.
+- **DEF-016 — Partial:** Local replica-set suites passed in Phase 1.7. Require green GitHub Actions replica-set runs before closing the CI portion.
+- **DEF-017 — Proposed fixed:** GitHub Actions configuration added and Node major pinned to 24 in `.nvmrc`; closure requires a green remote run and review of branch protection.
+- **DEF-012 — OPEN:** npm audit JSON is collected but does not block CI; dependency remediation and release gate are still required. Counts must be refreshed from real audit output.
+- **DEF-013–015 — OPEN:** Frontend advisories, lint/build and test absence require work in frontend repository.
+- **DEF-035 — New, OPEN:** CI currently uses major-tagged GitHub Actions, not immutable SHA-pinned actions. Pin exact reviewed SHAs as security policy requires.
+- **DEF-036 — New, OPEN:** Replica-set teardown warnings may appear; monitor CI and add lifecycle diagnostics if warning is coupled to process leaks or failing builds.
+- **All other DEF records remain unchanged.** No claim of fix is made until local tests and GitHub Actions execute successfully.
