@@ -6,6 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
 const { errorHandler, notFound } = require('./middleware/errormiddleware.js');
+const { requestId } = require('./src/shared/http/request-id');
 const multer = require('multer');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -35,6 +36,7 @@ const upload = multer({ storage });
 
 const app = express();
 app.set('trust proxy', 1);
+app.use(requestId); // Applied before CORS and routes so failures can be correlated.
 
 const allowedOrigins = resolveOrigins(process.env);
 app.use(cors({
@@ -44,6 +46,7 @@ app.use(cors({
     return callback(new Error(`CORS policy: request from origin ${origin} not allowed.`), false);
   },
   credentials: true,
+  exposedHeaders: ['X-Request-ID'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
