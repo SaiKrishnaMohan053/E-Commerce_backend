@@ -49,3 +49,12 @@ Each subphase report lists Fixed (with evidence), Newly identified, Still open, 
 - DEF-030 (Medium): persisted domain role schema/management missing; guard foundation added only; **OPEN**.
 - DEF-001–003, 010–020, 022–025 keep previous scope/status.
 - DEF-009 startup fix and DEF-021 Git log hygiene previously verified in Phase 1.3.
+
+## Phase 1.6 — Transaction foundation status
+
+- **DEF-002 — Open:** Transaction Unit of Work infrastructure added, but existing order save/stock updates remain nontransactional. Closing this issue requires v2 order/inventory integration, tests, and review.
+- **DEF-016 — Pending local verification:** Replica-set integration tests were added and must pass; CI coverage belongs to Phase 1.8. The default legacy Jest setup still uses standalone MongoMemoryServer and cannot be used to validate transactions.
+- **DEF-010 — Open:** Deprecated test-setup MongoDB driver flags remain pending Phase 1.8.
+- **DEF-031 — Open, Phase 1.7:** Unknown transaction commit outcomes need operation IDs and reconciliation; external side effects must use transactional outbox/idempotency. No automatic whole-transaction retry for an uncertain commit.
+- **Other existing findings:** Preserve the previous statuses for DEF-001, DEF-003–009, DEF-011–015, DEF-017–030. No closure is implied by this infrastructure patch.
+- **Release gate:** Atlas/Render replica-set readiness, real failure-mode validation, and application-level transaction usage are still unverified.
