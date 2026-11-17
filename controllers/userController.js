@@ -3,6 +3,7 @@ const Product = require('../models/product.js');
 const generateToken = require('../utils/generateToken.js');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { profileUpdateFields } = require('../src/shared/security/policies');
 const { uploadToS3, deleteFromS3 } = require('../utils/s3upload.js');
 const { sendApprovalEmail, sendResetPasswordEmail, sendDocumentRejectionEmail } = require('../utils/sendEmail.js');
 
@@ -226,7 +227,9 @@ const updateUserProfile = async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    Object.assign(user, req.body);
+    const result = profileUpdateFields(req.body);
+    if (result.error) return res.status(400).json({ message: result.error });
+    Object.assign(user, result.updates);
     await user.save();
 
     res.json({ message: 'Profile updated successfully' });

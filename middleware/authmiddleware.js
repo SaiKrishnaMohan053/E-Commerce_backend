@@ -13,7 +13,7 @@ const protect = async (req, res, next) => {
         const user = await User.findById(decoded.id).select('-password');
 
         if (!user) {
-          logger.warn("User not found for token", { token });
+          logger.warn("User not found for token", { userId: decoded.id });
           return res.status(401).json({ message: 'Not authorized, user does not exist' });
         }
 
@@ -68,4 +68,14 @@ const employee = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin, employee };
+// For v2 domain routes. Legacy admin/employee middleware remains available.
+const authorizeRoles = (...roles) => (req, res, next) => {
+  if (!req.user) return res.status(401).json({ message: 'Not authorized, user not found' });
+  const userRoles = new Set(Array.isArray(req.user.roles) ? req.user.roles : []);
+  if (req.user.isAdmin === true) userRoles.add('admin');
+  if (req.user.isEmployee === true) userRoles.add('employee');
+  if (roles.some(role => userRoles.has(role))) return next();
+  return res.status(403).json({ message: 'Not authorized for this role' });
+};
+
+module.exports = { protect, admin, employee, authorizeRoles };

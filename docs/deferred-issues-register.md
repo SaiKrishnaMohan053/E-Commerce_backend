@@ -38,3 +38,14 @@ Carry forward the Phase 1.3 findings. The register is authoritative only when an
 
 ## Issue lifecycle policy
 Each subphase report lists Fixed (with evidence), Newly identified, Still open, and Deferred. No issue closes based only on a green global suite.
+
+## Phase 1.5 proposed issue changes
+
+- DEF-004, DEF-005, DEF-006, DEF-007, DEF-008: fixes prepared; mark closed only after local regression and review.
+- DEF-026 (High): other-user profile read access at GET /api/users/profile/:id; **OPEN**, authorization/ownership hardening required before release.
+- DEF-027 (Medium): login and password-reset specific throttles absent; **OPEN**.
+- DEF-028 (High): upload MIME spoofing, malware scanning, registration upload limits; **OPEN**.
+- DEF-029 (High): generated password sent by email on approval; **OPEN**.
+- DEF-030 (Medium): persisted domain role schema/management missing; guard foundation added only; **OPEN**.
+- DEF-001–003, 010–020, 022–025 keep previous scope/status.
+- DEF-009 startup fix and DEF-021 Git log hygiene previously verified in Phase 1.3.

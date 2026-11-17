@@ -49,7 +49,7 @@ router.get('/restock-alerts', protect, admin, async (req, res) => {
   }
 });
 
-router.post('/send-weekly-inventory-report', async (req, res) => {
+router.post('/send-weekly-inventory-report', protect, admin, async (req, res) => {
   try {
     await weeklyJob();
     return res.json({ message: 'Weekly inventory report sent!' });

@@ -5,6 +5,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
+const { randomUUID } = require('node:crypto');
+const { UPLOAD_TYPES, MAX_UPLOAD_BYTES, validateUpload } = require('./src/shared/security/policies');
+const { protect, admin } = require('./middleware/authmiddleware');
 const { errorHandler, notFound } = require('./middleware/errormiddleware.js');
 const { requestId } = require('./src/shared/http/request-id');
 const multer = require('multer');
@@ -32,7 +35,11 @@ const s3 = new S3Client({
 });
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+  fileFilter: (_req, file, cb) => cb(null, Object.prototype.hasOwnProperty.call(UPLOAD_TYPES, file.mimetype)),
+});
 
 const app = express();
 app.set('trust proxy', 1);
@@ -57,19 +64,16 @@ const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Too many requests. Please try again later.',
-  skip: req => [
-    '/api/cart',
-    '/api/orders',
-    '/api/products',
-    '/api/admin',
-  ].some(path => req.originalUrl.startsWith(path)),
+  // Apply to every API route. No privileged bypasses.
 });
 app.use(globalLimiter);
 
-// Legacy upload endpoint intentionally unchanged; hardening is tracked for Phase 1.5.
-app.post('/api/upload', upload.single('file'), async (req, res) => {
+// Authorized uploads: admin only, bounded size/type, unpredictable object key.
+app.post('/api/upload', protect, admin, upload.single('file'), async (req, res) => {
   const file = req.file;
-  const fileName = `uploads/${Date.now()}_${file.originalname}`;
+  const invalid = validateUpload(file);
+  if (invalid) return res.status(400).json({ message: invalid });
+  const fileName = `uploads/${randomUUID()}${UPLOAD_TYPES[file.mimetype]}`;
 
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -84,8 +88,15 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     const url = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
     res.json({ fileUrl: url });
   } catch (error) {
-    res.status(500).json({ message: 'File upload failed', error });
+    res.status(500).json({ message: 'File upload failed' });
   }
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(err.code === 'LIMIT_FILE_SIZE' ? 413 : 400).json({ message: 'Upload rejected' });
+  }
+  return next(err);
 });
 
 app.use('/api/products', productRoutes);
