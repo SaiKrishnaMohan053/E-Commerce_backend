@@ -1,23 +1,17 @@
+'use strict';
 const { createLogger, format, transports } = require('winston');
 
+// Render-compatible stdout/stderr logging; avoid tracked runtime log files.
 const logger = createLogger({
-  level: 'info',
+  level: process.env.LOG_LEVEL || 'info',
   format: format.combine(
-    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.timestamp(),
     format.errors({ stack: true }),
     format.printf(({ timestamp, level, message, ...meta }) => {
-      let log = `${timestamp} [${level.toUpperCase()}]: ${message}`;
-      if (Object.keys(meta).length) {
-        log += ` | ${JSON.stringify(meta)}`;
-      }
-      return log;
-    })
+      const fields = Object.keys(meta).length ? ` | ${JSON.stringify(meta)}` : '';
+      return `${timestamp} [${level.toUpperCase()}]: ${message}${fields}`;
+    }),
   ),
-  transports: [
-    new transports.Console(), // Log to console
-    new transports.File({ filename: 'logs/error.log', level: 'error' }), // Log errors to file
-    new transports.File({ filename: 'logs/combined.log' }), // All logs
-  ],
+  transports: [new transports.Console()],
 });
-
 module.exports = logger;

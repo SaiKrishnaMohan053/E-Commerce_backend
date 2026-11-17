@@ -1,5 +1,7 @@
-const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config(); // Must run before modules that read env vars at import time.
+
+const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
@@ -10,6 +12,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { loadConfig, resolveOrigins } = require('./src/shared/config');
+const { startServer } = require('./src/shared/runtime/start-server');
 
 const productRoutes = require('./routes/productRoute.js');
 const userRoutes = require('./routes/userRoute.js');
@@ -17,8 +21,6 @@ const cartRoutes = require('./routes/cartRoutes.js');
 const orderRoutes = require('./routes/orderRoute.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const adminAlertRoutes = require('./routes/adminAlertsRoutes.js');
-
-dotenv.config();
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -32,22 +34,14 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const app = express();
-const server = http.createServer(app);
 app.set('trust proxy', 1);
 
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(',').map(s => s.trim())
-  : [];
-allowedOrigins.push('http://localhost:3000');
+const allowedOrigins = resolveOrigins(process.env);
 app.use(cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    callback(new Error(`CORS policy: request from origin ${origin} not allowed.`), false);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS policy: request from origin ${origin} not allowed.`), false);
   },
   credentials: true,
 }));
@@ -64,11 +58,12 @@ const globalLimiter = rateLimit({
     '/api/cart',
     '/api/orders',
     '/api/products',
-    '/api/admin', 
-  ].some(path => req.originalUrl.startsWith(path))
-})
+    '/api/admin',
+  ].some(path => req.originalUrl.startsWith(path)),
+});
 app.use(globalLimiter);
 
+// Legacy upload endpoint intentionally unchanged; hardening is tracked for Phase 1.5.
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
   const fileName = `uploads/${Date.now()}_${file.originalname}`;
@@ -100,18 +95,29 @@ app.use('/api/admin', adminAlertRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'test') {
-  mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.error('DB connection error:', err));
+async function boot() {
+  const config = loadConfig(process.env);
+  await startServer({
+    config,
+    connect: uri => mongoose.connect(uri),
+    listen: port => new Promise((resolve, reject) => {
+      const server = http.createServer(app);
+      server.once('error', reject);
+      server.listen(port, () => {
+        server.removeListener('error', reject);
+        console.log(`Server running on port ${port} (MongoDB connected)`);
+        resolve(server);
+      });
+    }),
+  });
+}
 
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () =>
-    console.log(`Server running on port ${PORT}`)
-  );
+if (require.main === module && process.env.NODE_ENV !== 'test') {
+  boot().catch(error => {
+    // Never print secrets or raw connection URIs.
+    console.error(`Startup failed: ${error.name || 'Error'}`);
+    process.exitCode = 1;
+  });
 }
 
 module.exports = app;
