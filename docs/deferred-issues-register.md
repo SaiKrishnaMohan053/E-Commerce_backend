@@ -58,3 +58,13 @@ Each subphase report lists Fixed (with evidence), Newly identified, Still open, 
 - **DEF-031 — Open, Phase 1.7:** Unknown transaction commit outcomes need operation IDs and reconciliation; external side effects must use transactional outbox/idempotency. No automatic whole-transaction retry for an uncertain commit.
 - **Other existing findings:** Preserve the previous statuses for DEF-001, DEF-003–009, DEF-011–015, DEF-017–030. No closure is implied by this infrastructure patch.
 - **Release gate:** Atlas/Render replica-set readiness, real failure-mode validation, and application-level transaction usage are still unverified.
+
+## Phase 1.7 — Idempotency, audit and outbox
+
+- **DEF-031 — Partially addressed, still OPEN:** Operation-idempotency record and a primary-read reconciliation path now exist. Unknown commit without a confirmed record remains uncertain. Durable follow-up and operational reconciliation are still required.
+- **DEF-032 — New, OPEN (Notifications):** No live outbox dispatcher, consumer/provider deduplication, dead-letter handling, retry caps or provider delivery monitoring. Lease helpers are infrastructure only.
+- **DEF-033 — New, OPEN (Security/Operations):** Audit records do not yet have privileged read APIs, tamper-resistant database permissions, retention and backup policy.
+- **DEF-034 — New, OPEN (v2 endpoints):** No legacy or v2 HTTP route currently binds Idempotency-Key to an authenticated principal and validated command. Integrate the helper when implementing each write endpoint.
+- **DEF-002 — OPEN:** Existing order persistence and stock updates remain outside MongoUnitOfWork.
+- **DEF-016 — Replica-set integration verified locally during 1.6; CI coverage still pending 1.8.**
+- **All existing security and dependency issues stay open unless previously independently closed.** No other issue IDs were removed or renumbered.
